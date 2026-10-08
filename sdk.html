@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>kinlock-sdk &middot; Kinlock docs</title>
+<meta name="description" content="The TypeScript client and event indexer for Kinlock." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="banner">Testnet only. No real money moves here. <a href="https://kinlock-app.vercel.app">Try the live app</a></div>
+<header class="site">
+  <a class="brand" href="index.html">Kinlock docs</a>
+  <nav class="site">
+    <a href="index.html">Overview</a>
+    <a href="contracts.html">Contracts</a>
+    <a href="sdk.html" aria-current="page">SDK</a>
+    <a href="app.html">App</a>
+    <a href="registry.html">Registry</a>
+    <a href="https://github.com/Kinlock-Org">GitHub ↗</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>kinlock-sdk</h1>
+    <p class="lede">
+      The only way any other layer talks to the contract. <code>packages/sdk</code> is the
+      TypeScript client; <code>services/indexer</code> mirrors chain events into Postgres for
+      lists, never for money-moving decisions.
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/Kinlock-Org/kinlock-sdk">View on GitHub</a>
+      <a class="btn ghost" href="https://github.com/Kinlock-Org/kinlock-sdk/releases">Releases</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Public API</h2>
+    <p>
+      Released as <code>v0.3.0</code> as a GitHub Release tarball (not published to npm; see
+      ADR-0026 for why). Current public exports:
+    </p>
+    <ul class="api-list">
+      <li><code>createLock</code></li>
+      <li><code>release</code></li>
+      <li><code>refund</code></li>
+      <li><code>decline</code></li>
+      <li><code>getLock</code></li>
+      <li><code>getPayee</code></li>
+      <li><code>verifyReceipt</code></li>
+      <li><code>buildClaimLink</code></li>
+      <li><code>parseClaimLink</code></li>
+      <li><code>preflight</code></li>
+      <li><code>toBaseUnits</code></li>
+      <li><code>fromBaseUnits</code></li>
+      <li><code>generateSalt</code></li>
+      <li><code>computeRefHash</code></li>
+      <li><code>buildRequestLink</code></li>
+      <li><code>parseRequestLink</code></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Rules the SDK enforces</h2>
+    <ul>
+      <li><code>getLock</code> and <code>getPayee</code> read chain state. Indexer-backed reads are for lists only, and the API that serves them says so.</li>
+      <li><code>buildClaimLink</code> puts the reference and salt in the URL fragment. The SDK never logs, persists, or transmits them.</li>
+      <li>Amounts are <code>bigint</code> in code, decimal strings in JSON, never a JavaScript <code>number</code>.</li>
+      <li><code>preflight</code> checks sender balance, payee Active status, a recent payout change (&le; 7 days), a duplicate <code>ref_hash</code> for the payee, and an authorized USDC trustline on the payout account.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Indexer</h2>
+    <p>
+      <code>chain_events &rarr; Postgres &rarr; list API</code>. Idempotent writes keyed on
+      <code>(tx_hash, event_index)</code>, so replaying events is safe. A gap in event retrieval
+      stops ingestion and alerts; it's never silently skipped.
+    </p>
+    <p>
+      Not yet deployed anywhere public. The app's list pages (<code>/send</code>,
+      <code>/request</code>, <code>/payee</code>) degrade gracefully to a "can't load right now"
+      state until that happens.
+    </p>
+  </section>
+
+  <section>
+    <h2>Stack</h2>
+    <p>TypeScript, strict mode, no <code>any</code>. Zod validation at every external boundary (HTTP, RPC responses, env). <code>@stellar/stellar-sdk</code> plus generated TS bindings from the contract.</p>
+  </section>
+</main>
+<footer class="site">
+  <span>Kinlock is testnet-only, unaudited software. Don't rely on it for anything real yet.</span>
+  <span><a href="https://github.com/Kinlock-Org/Kinlock-Org.github.io">Source for this site</a></span>
+</footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kinlock docs</title>
+<meta name="description" content="How Kinlock's four repos fit together: contracts, SDK, app, and registry." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="banner">Testnet only. No real money moves here. <a href="https://kinlock-app.vercel.app">Try the live app</a></div>
+<header class="site">
+  <a class="brand" href="index.html">Kinlock docs</a>
+  <nav class="site">
+    <a href="index.html" aria-current="page">Overview</a>
+    <a href="contracts.html">Contracts</a>
+    <a href="sdk.html">SDK</a>
+    <a href="app.html">App</a>
+    <a href="registry.html">Registry</a>
+    <a href="https://github.com/Kinlock-Org">GitHub ↗</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>Lock USDC on Stellar for a verified school or landlord, anywhere in the world.</h1>
+    <p class="lede">
+      This is the documentation portal for Kinlock's four repositories: what each one owns, how
+      they depend on each other, and where to go for the full technical detail.
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://kinlock-app.vercel.app">Try the live app</a>
+      <a class="btn ghost" href="https://github.com/Kinlock-Org">View on GitHub</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>How the repos fit together</h2>
+    <p>
+      One product, four repositories, in a fixed dependency order. Each repo owns one layer; none
+      of them duplicate another's responsibility.
+    </p>
+    <div class="flow" aria-hidden="true">
+      <div class="node emphasis">contracts</div>
+      <div class="arrow">&rarr;</div>
+      <div class="node">bindings</div>
+      <div class="arrow">&rarr;</div>
+      <div class="node emphasis">sdk</div>
+      <div class="arrow">&rarr;</div>
+      <div class="node emphasis">app</div>
+    </div>
+    <p>
+      <strong>registry</strong> sits outside that chain: it's public payee data (schools,
+      landlords) that the app and indexer read, bound to the contract by a hash check, not code
+      that other repos import.
+    </p>
+  </section>
+
+  <section>
+    <h2>The four repos</h2>
+    <div class="repo-grid">
+      <div class="card">
+        <h3><a href="contracts.html">kinlock-contracts</a></h3>
+        <p>The Soroban contract that actually holds and moves funds: registry and vault modules, tests, deploy scripts, generated TypeScript bindings.</p>
+        <div class="meta">Rust &middot; Soroban &middot; <a href="https://github.com/Kinlock-Org/kinlock-contracts">GitHub ↗</a></div>
+      </div>
+      <div class="card">
+        <h3><a href="sdk.html">kinlock-sdk</a></h3>
+        <p>The TypeScript client every other layer talks to the contract through, plus the event indexer that mirrors chain data for lists.</p>
+        <div class="meta">TypeScript &middot; v0.3.0 &middot; <a href="https://github.com/Kinlock-Org/kinlock-sdk">GitHub ↗</a></div>
+      </div>
+      <div class="card">
+        <h3><a href="app.html">kinlock-app</a></h3>
+        <p>The Next.js web app: senders lock funds, payees claim them, anyone can verify a receipt.</p>
+        <div class="meta">Next.js &middot; <a href="https://kinlock-app.vercel.app">Live demo ↗</a> &middot; <a href="https://github.com/Kinlock-Org/kinlock-app">GitHub ↗</a></div>
+      </div>
+      <div class="card">
+        <h3><a href="registry.html">kinlock-registry</a></h3>
+        <p>The public, schema-validated list of verified payees, per country, bound to the on-chain record by a hash.</p>
+        <div class="meta">JSON Schema &middot; <a href="https://github.com/Kinlock-Org/kinlock-registry">GitHub ↗</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Non-negotiable principles</h2>
+    <p>These hold across all four repos, not just the contract:</p>
+    <ul>
+      <li><strong>Chain is truth.</strong> Pages that move money read chain state directly, never a database cache.</li>
+      <li><strong>Non-custodial.</strong> No service holds a user's keys or funds; only the contract does, under its own rules.</li>
+      <li><strong>No privileged path to locked funds.</strong> Funds leave the contract only to the payout address snapshotted at creation, or back to the sender.</li>
+      <li><strong>Honest receipts.</strong> A receipt proves payment to a verified payee. It is not proof the money was spent the way anyone expected.</li>
+      <li><strong>Country-agnostic core.</strong> Country and currency are registry data, never hard-coded in the contract, SDK, or app.</li>
+    </ul>
+    <p>
+      Full depth lives in the canonical docs:
+      <a href="https://github.com/Kinlock-Org/.github/blob/main/docs/ARCHITECTURE_ESSENTIALS.md">ARCHITECTURE_ESSENTIALS.md</a>,
+      <a href="https://github.com/Kinlock-Org/.github/blob/main/docs/ARCHITECTURE.md">ARCHITECTURE.md</a>,
+      <a href="https://github.com/Kinlock-Org/.github/blob/main/docs/PRD.md">PRD.md</a>, and the
+      <a href="https://github.com/Kinlock-Org/.github/tree/main/docs/adr">ADR index</a>. This site
+      summarizes; those files are the source of truth.
+    </p>
+  </section>
+</main>
+<footer class="site">
+  <span>Kinlock is testnet-only, unaudited software. Don't rely on it for anything real yet.</span>
+  <span><a href="https://github.com/Kinlock-Org/Kinlock-Org.github.io">Source for this site</a></span>
+</footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>kinlock-app &middot; Kinlock docs</title>
+<meta name="description" content="The Next.js web app for sending, claiming, and verifying Kinlock payments." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="banner">Testnet only. No real money moves here. <a href="https://kinlock-app.vercel.app">Try the live app</a></div>
+<header class="site">
+  <a class="brand" href="index.html">Kinlock docs</a>
+  <nav class="site">
+    <a href="index.html">Overview</a>
+    <a href="contracts.html">Contracts</a>
+    <a href="sdk.html">SDK</a>
+    <a href="app.html" aria-current="page">App</a>
+    <a href="registry.html">Registry</a>
+    <a href="https://github.com/Kinlock-Org">GitHub ↗</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>kinlock-app</h1>
+    <p class="lede">
+      The Next.js web app: payee requests, the sender flow, claim and decline, and receipt
+      verification. Everywhere money moves, it reads straight from the chain, never from the
+      indexer's cache.
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://kinlock-app.vercel.app">Try the live app</a>
+      <a class="btn ghost" href="https://github.com/Kinlock-Org/kinlock-app">View on GitHub</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Pages</h2>
+    <dl class="facts">
+      <dt><code>/</code></dt>
+      <dd>Landing page and plain-language explainer</dd>
+      <dt><code>/send</code></dt>
+      <dd>Sender flow: pick a verified payee, set a schedule, review preflight checks, create a lock</dd>
+      <dt><code>/request</code></dt>
+      <dd>A payee builds a link that pre-fills the sender's form. The link carries no authority of its own</dd>
+      <dt><code>/claim/[id]</code></dt>
+      <dd>The payee's claim page: checks the reference against <code>ref_hash</code>, then releases</dd>
+      <dt><code>/locks/[id]</code></dt>
+      <dd>Sender's view of a lock, with refund shown only when the contract actually allows it</dd>
+      <dt><code>/payee</code>, <code>/attester</code></dt>
+      <dd>Dashboard and onboarding-checklist tooling</dd>
+      <dt><code>/r/[txHash]/[eventIndex]</code>, <code>/verify</code></dt>
+      <dd>Receipt page and verifier: "Payment to verified payee," nothing stronger</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Rules that don't bend</h2>
+    <ul>
+      <li>Claim, release, refund, decline, and approve pages read chain state, not the indexer.</li>
+      <li>The claim-link fragment (<code>#r=&hellip;&amp;s=&hellip;</code>) never reaches a server, log, analytics tool, or third party. <code>/claim/*</code> loads no third-party scripts at all.</li>
+      <li>Every asset is shown as code <em>and</em> issuer. Never by code alone.</li>
+      <li>Local-currency amounts are always labeled indicative, with a USD-only fallback when there's no reliable rate. Never invented, never guaranteed.</li>
+      <li>Every user-visible string lives in a message file; formatting goes through <code>Intl</code>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Stack</h2>
+    <p>Next.js (App Router), TypeScript, Tailwind. Wallet access goes through a wallet-kit abstraction so wallets stay swappable. The app talks to the contract only through <a href="sdk.html">kinlock-sdk</a>, never with ad hoc contract calls.</p>
+  </section>
+</main>
+<footer class="site">
+  <span>Kinlock is testnet-only, unaudited software. Don't rely on it for anything real yet.</span>
+  <span><a href="https://github.com/Kinlock-Org/Kinlock-Org.github.io">Source for this site</a></span>
+</footer>
+</body>
+</html>

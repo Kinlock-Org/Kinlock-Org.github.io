@@ -1,0 +1,282 @@
+:root {
+  --ink: #141a17;
+  --paper: #f6f7f5;
+  --accent: #1c7c68;
+  --accent-ink: #f6f7f5;
+  --line: #dce3de;
+  --panel: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8ede9;
+    --paper: #0f1512;
+    --accent: #35a085;
+    --accent-ink: #0f1512;
+    --line: #1c2622;
+    --panel: #141b17;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-color: var(--accent);
+}
+
+.banner {
+  background: var(--ink);
+  color: var(--paper);
+  text-align: center;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+.banner a {
+  color: var(--paper);
+  text-decoration-color: color-mix(in srgb, var(--paper) 55%, transparent);
+}
+
+header.site {
+  max-width: 72rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 0.5rem;
+}
+
+.brand {
+  font-weight: 600;
+  font-size: 1.125rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+nav.site {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  font-size: 0.9375rem;
+}
+
+nav.site a {
+  text-decoration: none;
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+nav.site a:hover,
+nav.site a[aria-current="page"] {
+  opacity: 1;
+  color: var(--accent);
+}
+
+main {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 4rem;
+}
+
+.hero h1 {
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0.5rem 0 0;
+  max-width: 28ch;
+}
+
+.hero p.lede {
+  font-size: 1.125rem;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+  max-width: 46ch;
+  margin-top: 0.75rem;
+}
+
+.cta-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btn.ghost {
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+
+.flow .node {
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  background: var(--panel);
+}
+
+.flow .node.emphasis {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+}
+
+.flow .arrow {
+  color: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+.repo-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .repo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background: var(--panel);
+}
+
+.card h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+}
+
+.card p {
+  margin: 0;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+  font-size: 0.9375rem;
+}
+
+.card .meta {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+section + section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+dl.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.9375rem;
+}
+
+dl.facts dt {
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+dl.facts dd {
+  margin: 0;
+}
+
+code,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+}
+
+code {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.375rem;
+}
+
+pre {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+ul.api-list {
+  columns: 2;
+  column-gap: 2rem;
+  font-size: 0.9375rem;
+  padding-left: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  ul.api-list {
+    columns: 1;
+  }
+}
+
+footer.site {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>kinlock-contracts &middot; Kinlock docs</title>
+<meta name="description" content="The Soroban contract that holds and moves Kinlock's locked funds." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="banner">Testnet only. No real money moves here. <a href="https://kinlock-app.vercel.app">Try the live app</a></div>
+<header class="site">
+  <a class="brand" href="index.html">Kinlock docs</a>
+  <nav class="site">
+    <a href="index.html">Overview</a>
+    <a href="contracts.html" aria-current="page">Contracts</a>
+    <a href="sdk.html">SDK</a>
+    <a href="app.html">App</a>
+    <a href="registry.html">Registry</a>
+    <a href="https://github.com/Kinlock-Org">GitHub ↗</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>kinlock-contracts</h1>
+    <p class="lede">
+      One Soroban contract, <code>kinlock</code>, with two modules: registry (who's a verified
+      payee) and vault (where the money actually sits). This is the only place funds exist outside
+      a user's own wallet.
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/Kinlock-Org/kinlock-contracts">View on GitHub</a>
+      <a class="btn ghost" href="https://github.com/Kinlock-Org/kinlock-contracts/blob/main/ROADMAP.md">Roadmap</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Entry points</h2>
+    <dl class="facts">
+      <dt>Admin</dt>
+      <dd><code>init</code>, <code>add_attester</code> / <code>remove_attester</code>, <code>add_token</code> / <code>remove_token</code>, <code>set_paused_new_locks</code>, <code>set_caps</code>, <code>upgrade</code></dd>
+      <dt>Registry</dt>
+      <dd><code>register_payee</code>, <code>set_status</code>, <code>update_payout</code> (affects new locks only)</dd>
+      <dt>Vault</dt>
+      <dd><code>create_lock</code>, <code>release</code>, <code>refund</code>, <code>decline</code>, <code>bump_lock</code> (permissionless), reads</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Rules that don't bend</h2>
+    <ul>
+      <li><code>release</code>: caller must be <code>lock.payout</code>; payee must be Active; <code>unlock_at &le; now &lt; expires_at</code>.</li>
+      <li><code>refund</code> (sender): <code>now &ge; expires_at</code>, or payee Revoked, or payee Suspended past a 14-day grace.</li>
+      <li><code>decline</code> (payee): any time while the lock is Open; returns the remainder to the sender.</li>
+      <li>No fee, no <code>SenderApproval</code> mode, no mutual cancel, no payout timelock.</li>
+      <li>State is written before every token transfer; a failed transfer reverts everything.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Invariants (property-tested)</h2>
+    <p>Ten invariants, checked by <code>proptest</code> over random action sequences, not just unit tests:</p>
+    <ol>
+      <li><code>released + returned &le; total</code>; equality once the lock reaches a terminal state.</li>
+      <li>Tranches sum to the lock's total; each tranche's <code>unlock_at &le; expires_at</code>.</li>
+      <li>Funds exit only to <code>lock.payout</code> or <code>lock.sender</code>. No third path.</li>
+      <li>A tranche is released at most once.</li>
+      <li>Release only happens inside its time window, called by <code>lock.payout</code>.</li>
+      <li>Refund only on expiry, Revoked status, or Suspended-past-grace.</li>
+      <li><code>lock.payout</code> is immutable once the lock is created.</li>
+      <li>Admin, attester, pause, and allowlist actions never block release, decline, or refund on existing locks.</li>
+      <li><code>total_locked</code> equals the sum of remainders across every Open lock.</li>
+      <li>A failed token transfer reverts all state changes from that call.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>On testnet today</h2>
+    <dl class="facts">
+      <dt>Contract</dt>
+      <dd><code>CCSHDQFRYFC3AHV5NE6ULQW6X2CMG5RPANBORDXJGSUD6UKECASJQBRI</code></dd>
+      <dt>Admin</dt>
+      <dd>2-of-3 multisig (testnet keys only)</dd>
+      <dt>Token</dt>
+      <dd>Circle testnet USDC, allowlisted</dd>
+      <dt>Test coverage</dt>
+      <dd>103 unit / auth / event / TTL tests, plus property tests over 512 random action sequences</dd>
+    </dl>
+    <p>Full record: <a href="https://github.com/Kinlock-Org/kinlock-contracts/blob/main/DEPLOYMENTS.md">DEPLOYMENTS.md</a>.</p>
+  </section>
+
+  <section>
+    <h2>Stack</h2>
+    <p>Rust, <code>#![no_std]</code>, <code>soroban-sdk</code>. No floating point, no <code>std</code> collections, no <code>unwrap</code>/<code>expect</code>/bare <code>panic!</code> in contract code. USDC via the Stellar Asset Contract (SEP-41), 7 decimals, <code>i128</code> checked arithmetic throughout.</p>
+  </section>
+</main>
+<footer class="site">
+  <span>Kinlock is testnet-only, unaudited software. Don't rely on it for anything real yet.</span>
+  <span><a href="https://github.com/Kinlock-Org/Kinlock-Org.github.io">Source for this site</a></span>
+</footer>
+</body>
+</html>
