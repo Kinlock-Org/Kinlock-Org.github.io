@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/Kinlock-Org/.github/blob/main/SECURITY.md
+    about: Please report security issues privately per SECURITY.md. Do not open a public issue.
+  - name: Code change needed, not just docs
+    url: https://github.com/Kinlock-Org
+    about: If the fix needs a code change (not just prose), open the issue in that repo instead.
