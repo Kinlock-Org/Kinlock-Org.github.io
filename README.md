@@ -1,43 +1,35 @@
 # Kinlock-Org.github.io
 
-[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-live-brightgreen)](https://kinlock-org.github.io)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-The Kinlock documentation hub: the hosted site at
-[kinlock-org.github.io](https://kinlock-org.github.io), and where documentation issues across the
-whole org get filed and picked up. See [`CONTRIBUTING.md`](CONTRIBUTING.md) before filing or
-working one.
+The Kinlock documentation hub: the hosted site at [kinlock-org.github.io](https://kinlock-org.github.io), and where documentation issues for the whole org get filed and picked up.
 
 ## The site
 
-Plain static HTML/CSS, no build step, no framework. It summarizes each of the four repos
-(`kinlock-contracts`, `kinlock-sdk`, `kinlock-app`, `kinlock-registry`) and links out to the
-canonical docs in [`.github`](https://github.com/Kinlock-Org/.github) for full depth, so there's
-one source of truth, not two copies that can drift apart.
-
-To edit a page: change the relevant `.html` file and `styles.css` directly, check it in a browser,
-then push to `main` (behind a PR; branch protection requires a review). Pages rebuilds
-automatically.
+Plain static HTML and CSS — no framework, no build step, no dependencies. It explains what Kinlock is and summarizes each of the four code repos, then links out to the canonical docs in [`Kinlock-Org/.github`](https://github.com/Kinlock-Org/.github) for depth, so there is one source of truth rather than two copies that can drift apart.
 
 | File | What it covers |
 |---|---|
-| `index.html` | Landing page: what Kinlock is, how the four repos fit together |
-| `contracts.html` | `kinlock-contracts`: entry points, invariants, testnet deployment |
-| `sdk.html` | `kinlock-sdk`: public API, preflight checks, indexer |
-| `app.html` | `kinlock-app`: pages, rules, stack |
-| `registry.html` | `kinlock-registry`: payee fields, CI rules, who adds a payee |
+| `index.html` | Landing: what Kinlock promises, how the repos fit together, the non-negotiable principles, where to file a docs issue |
+| `contracts.html` | `kinlock-contracts`: entry points by role, the unbending rules, the ten property-tested invariants, testnet deployment facts |
+| `sdk.html` | `kinlock-sdk`: public exports, preflight and receipt behavior, the indexer and its list API |
+| `app.html` | `kinlock-app`: routes, the chain-is-truth and claim-link rules, stack |
+| `registry.html` | `kinlock-registry`: payee fields, what CI enforces off-chain, who may add a payee |
+| `styles.css` | Design tokens, dark mode, responsive nav, animations |
+| `nav.js` | Mobile nav disclosure: toggle, Escape to close, close on link click |
+| `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` | Icons, linked from every page |
+
+To change a page, edit its `.html` file (plus `styles.css`, or `nav.js` if it touches navigation behavior), open it in a browser to check, then merge to `main`. GitHub Pages republishes automatically; there is no deploy step to run.
+
+**Keep the site honest.** It states facts — entry points, versions, contract IDs, what is and isn't built — so those drift the moment code changes. When you edit a page, verify the claim against the code in that repo, not against another page.
 
 ## The issue hub
 
-Documentation gaps anywhere in Kinlock get filed here with the **Documentation** issue template,
-tagged with the repo they're about (`area:contract`, `area:sdk`, `area:app`, `area:registry`, or
-`area:site` for this repo). Centralizing them here means a contributor looking for documentation
-work has one place to check, instead of searching four repos' issue trackers.
+Documentation gaps anywhere in Kinlock are filed here using the **Documentation** issue template, labeled with the repo they're about: `area:contract`, `area:sdk`, `area:app`, `area:registry`, or `area:site` for this repo. Centralizing them gives a contributor looking for documentation work one place to check instead of four issue trackers.
 
-Fixes that need a **code change**, not just prose, still happen in the repo the code lives in;
-this hub tracks the gap, not necessarily the fix.
+Blank issues are disabled: a **security** report goes through the org `SECURITY.md`, and a gap that needs a code change is fixed in the repo that holds the code — this hub tracks the gap, not necessarily the fix. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for where a fix actually lands.
 
 ## Roadmap
 
-This repo doesn't keep its own `ROADMAP.md`. It's tracked as row `W-10` in
-[`Kinlock-Org/.github`'s `docs/ROADMAP.md`](https://github.com/Kinlock-Org/.github/blob/main/docs/ROADMAP.md).
+This repo keeps no `ROADMAP.md` of its own. It is tracked as row `W-10` in [`Kinlock-Org/.github` → `docs/ROADMAP.md`](https://github.com/Kinlock-Org/.github/blob/main/docs/ROADMAP.md).
