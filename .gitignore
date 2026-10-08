@@ -1,0 +1,3 @@
+# Local agent-skill tooling (npx skills), not product code.
+.claude/
+skills-lock.json

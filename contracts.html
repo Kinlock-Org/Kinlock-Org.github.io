@@ -5,13 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>kinlock-contracts &middot; Kinlock docs</title>
 <meta name="description" content="The Soroban contract that holds and moves Kinlock's locked funds." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 <div class="banner">Testnet only. No real money moves here. <a href="https://kinlock-app.vercel.app">Try the live app</a></div>
 <header class="site">
   <a class="brand" href="index.html">Kinlock docs</a>
-  <nav class="site">
+  <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="site" id="site-nav">
     <a href="index.html">Overview</a>
     <a href="contracts.html" aria-current="page">Contracts</a>
     <a href="sdk.html">SDK</a>
@@ -98,5 +104,6 @@
   <span>Kinlock is testnet-only, unaudited software. Don't rely on it for anything real yet.</span>
   <span><a href="https://github.com/Kinlock-Org/Kinlock-Org.github.io">Source for this site</a></span>
 </footer>
+<script src="nav.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <mask id="lock-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+      <rect width="1024" height="1024" fill="white"/>
+      <rect x="452" y="570" width="120" height="120" rx="18" fill="black"/>
+    </mask>
+  </defs>
+  <g mask="url(#lock-mask)" fill="#1c7c68">
+    <rect x="184" y="420" width="656" height="420" rx="72"/>
+    <path d="M332 430V330A180 180 0 0 1 692 330V430" fill="none" stroke="#1c7c68" stroke-width="96" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
