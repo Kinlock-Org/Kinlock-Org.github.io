@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protocol Mechanics &middot; Kinlock docs</title>
+<meta name="description" content="Lifecycle, state machine, and economic model of Kinlock programmable payment locks." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="banner">Testnet only. No real money moves here. <a href="https://kinlock-app.vercel.app">Try the live app</a></div>
+<header class="site">
+  <a class="brand" href="index.html">Kinlock docs</a>
+  <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="site" id="site-nav">
+    <a href="index.html">Overview</a>
+    <a href="mechanics.html" aria-current="page">Mechanics</a>
+    <a href="guides.html">Guides</a>
+    <a href="contracts.html">Contracts</a>
+    <a href="sdk.html">SDK</a>
+    <a href="app.html">App</a>
+    <a href="registry.html">Registry</a>
+    <a href="https://github.com/Kinlock-Org">GitHub ↗</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>Protocol Mechanics & Economic Model</h1>
+    <p class="lede">
+      How payment locks work mathematically, cryptographically, and economically on Stellar (Soroban).
+      Zero custodial risk, deterministic release schedules, and transparent state transitions.
+    </p>
+  </section>
+
+  <section>
+    <h2>The Lock State Machine</h2>
+    <p>
+      Every lock in Kinlock begins in the <code>Open</code> state and follows a strictly defined,
+      immutable lifecycle. Money can only take two exit paths: forward to the snapshotted payout address,
+      or backward to the sender.
+    </p>
+    <div class="facts">
+      <dt>1. Open</dt>
+      <dd>Funds are deposited into the Soroban contract vault. Payout address and token are snapshotted permanently. Tranches wait for their individual <code>unlock_at</code> timestamps.</dd>
+      <dt>2. Released</dt>
+      <dd>Tranches are claimed by the recipient as they become due (<code>unlock_at &le; now &lt; expires_at</code>). When all tranches are released, the lock is fully closed.</dd>
+      <dt>3. Declined</dt>
+      <dd>The payee explicitly declines the lock at any time while Open. All unreleased funds return immediately to the sender.</dd>
+      <dt>4. Refunded</dt>
+      <dd>The lock passes <code>expires_at</code>, or the verified payee is Revoked / Suspended past a 14-day grace period. The sender reclaims 100% of the remaining balance.</dd>
+    </div>
+  </section>
+
+  <section>
+    <h2>Worked Economic Example: $1,200 Tuition Schedule</h2>
+    <p>
+      To understand how Kinlock operates in real financial scenarios, consider a diaspora parent sending
+      tuition to a secondary school in Nairobi, Kenya:
+    </p>
+    <ul>
+      <li><strong>Total Tuition:</strong> $1,200 USDC (represented as <code>12,000,000,000</code> base units, 7 decimals).</li>
+      <li><strong>Tranche Schedule:</strong> Split into 3 equal term payments of $400 USDC:
+        <ul>
+          <li><strong>Tranche 1 ($400):</strong> Unlocks immediately on Day 1 (Term 1 fees).</li>
+          <li><strong>Tranche 2 ($400):</strong> Unlocks at Day 90 (Term 2 fees).</li>
+          <li><strong>Tranche 3 ($400):</strong> Unlocks at Day 180 (Term 3 fees).</li>
+        </ul>
+      </li>
+      <li><strong>Expiration:</strong> Set to Day 210 (30 days after the final tranche unlock).</li>
+      <li><strong>Protocol Fees:</strong> <strong>$0.00 (0%)</strong>. Kinlock is completely non-extractive; no protocol fees are deducted.</li>
+      <li><strong>Network Gas Fees:</strong> Paid in XLM on Stellar (~0.00001 XLM per transaction, &lt; $0.0001 USD total).</li>
+    </ul>
+    <p>
+      If the student transfers schools after Term 1, the school releases Tranche 1 ($400) and declines the rest.
+      The remaining $800 USDC immediately returns to the parent's wallet—with zero dispute friction or intermediary delays.
+    </p>
+  </section>
+
+  <section>
+    <h2>Client-Side Cryptographic Privacy</h2>
+    <p>
+      Public blockchains are pseudonymous, but financial references (e.g. invoice numbers, student IDs)
+      are sensitive personal data. Kinlock solves this through a zero-knowledge link fragment pattern:
+    </p>
+    <div class="facts">
+      <dt>1. Salt Generation</dt>
+      <dd>The sender's browser generates 16 bytes of cryptographically secure random salt.</dd>
+      <dt>2. Hash Derivation</dt>
+      <dd>The browser computes <code>ref_hash = sha256(reference || salt)</code>. Only this 32-byte hash is sent to the contract.</dd>
+      <dt>3. URL Hash Fragment</dt>
+      <dd>The plaintext reference and salt are formatted into the URL hash fragment: <code>/claim/42#r=INV-2026-01&amp;s=a1b2c3d4...</code>.</dd>
+      <dt>4. Server Blindness</dt>
+      <dd>Per RFC 3986, HTTP clients never transmit the fragment to web servers or APIs. No server, database, or analytics tracker ever sees the reference.</dd>
+    </div>
+  </section>
+
+  <section>
+    <h2>Soroban State TTL &amp; Safety Margins</h2>
+    <p>
+      Soroban ledger storage entries expire unless periodically renewed. To guarantee safety:
+    </p>
+    <ul>
+      <li><strong>Maximum Duration:</strong> Set to <strong>149 days</strong> (ADR-0020) so that lock duration + 30-day TTL grace fits safely inside the network's maximum entry TTL.</li>
+      <li><strong>Permissionless Bumping:</strong> Any party can call <code>bump_lock(lock_id)</code> to extend a lock's TTL before expiration.</li>
+    </ul>
+  </section>
+</main>
+<footer class="site">
+  <span>Kinlock is testnet-only, unaudited software. Don't rely on it for anything real yet.</span>
+  <span><a href="https://github.com/Kinlock-Org/Kinlock-Org.github.io">Source for this site</a></span>
+</footer>
+<script src="nav.js" defer></script>
+</body>
+</html>
