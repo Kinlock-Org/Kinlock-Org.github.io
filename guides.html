@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>User &amp; Developer Guides &middot; Kinlock docs</title>
+<meta name="description" content="Step-by-step guides for senders, payees, attesters, and developers using Kinlock." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="banner">Testnet only. No real money moves here. <a href="https://kinlock-app.vercel.app">Try the live app</a></div>
+<header class="site">
+  <a class="brand" href="index.html">Kinlock docs</a>
+  <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="site" id="site-nav">
+    <a href="index.html">Overview</a>
+    <a href="mechanics.html">Mechanics</a>
+    <a href="guides.html" aria-current="page">Guides</a>
+    <a href="contracts.html">Contracts</a>
+    <a href="sdk.html">SDK</a>
+    <a href="app.html">App</a>
+    <a href="registry.html">Registry</a>
+    <a href="https://github.com/Kinlock-Org">GitHub ↗</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>Kinlock Guides</h1>
+    <p class="lede">
+      Plain-language walkthroughs for senders locking funds, payees claiming tranches,
+      attesters vetting institutions, and developers integrating the SDK.
+    </p>
+  </section>
+
+  <section>
+    <h2>Guide for Senders</h2>
+    <p>
+      Senders lock USDC funds to ensure they reach the intended recipient on schedule:
+    </p>
+    <ol>
+      <li><strong>Select Lock Mode:</strong>
+        <ul>
+          <li><strong>Verified Payee:</strong> Choose an institution (School or Housing) verified by an official local attester. Receipts prove payment to a vetted payee.</li>
+          <li><strong>Direct Recipient:</strong> Enter any valid Stellar address (<code>G...</code> or <code>C...</code>) for milestones, rent, or contractor payments.</li>
+        </ul>
+      </li>
+      <li><strong>Set the Schedule:</strong> Specify the total amount and up to 12 scheduled unlock dates.</li>
+      <li><strong>Confirm Preflight Checks:</strong> The SDK automatically verifies that your balance is sufficient, the recipient holds an active USDC trustline, and the payee is active.</li>
+      <li><strong>Approve and Fund:</strong> Sign the transaction using your Stellar wallet (Freighter, Lobstr, xBull). Funds transfer directly into the Soroban vault.</li>
+      <li><strong>Share the Claim Link:</strong> Copy the generated link (e.g. <code>/claim/42#r=...&amp;s=...</code>) and send it privately to the recipient via WhatsApp, Email, or SMS.</li>
+      <li><strong>Reclaim on Expiry:</strong> If funds remain unclaimed after the lock expiration date, visit <code>/locks/[id]</code> and click <strong>Claim Refund</strong>. 100% of unclaimed funds return to your wallet.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Guide for Payees &amp; Recipients</h2>
+    <p>
+      Payees receive funds securely without managing complicated escrow accounts:
+    </p>
+    <ol>
+      <li><strong>Generate a Payment Request:</strong> Visit <code>/request</code> to generate a pre-filled payment request with your address, reference code, and suggested tranche dates.</li>
+      <li><strong>Receive the Claim Link:</strong> When the sender funds the lock, open the received claim link. The browser verifies the reference against the on-chain hash.</li>
+      <li><strong>Release Tranches:</strong> When a scheduled tranche reaches its unlock date, connect your payout wallet and click <strong>Release</strong>. The USDC immediately transfers to your account.</li>
+      <li><strong>Decline Unwanted Funds:</strong> If a student leaves or an agreement is cancelled, click <strong>Decline</strong>. All unreleased remainder funds return immediately to the sender.</li>
+      <li><strong>Export Receipts:</strong> After claiming, view your permanent receipt at <code>/r/[txHash]/[eventIndex]</code> or export your full transaction history to CSV from the <code>/payee</code> dashboard.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Guide for Attesters</h2>
+    <p>
+      Attesters are trusted local organizations (NGOs, school boards, housing authorities) that vouch for institutions:
+    </p>
+    <ol>
+      <li><strong>Verify Off-Chain Identity:</strong> Confirm the institution's official registration, physical presence, and bank/crypto payout address.</li>
+      <li><strong>Run Readiness Checks:</strong> Run <code>pnpm check-attester-readiness &lt;payout-address&gt;</code> to confirm the account has an authorized USDC trustline and minimum XLM float.</li>
+      <li><strong>Submit Registry PR:</strong> Create a new record in <code>payees/&lt;country&gt;/&lt;slug&gt;.json</code> and submit a PR to <code>kinlock-registry</code>.</li>
+      <li><strong>On-Chain Vouch:</strong> Call <code>register_payee</code> on the Soroban contract using your authorized attester key.</li>
+      <li><strong>Emergency Oversight:</strong> If fraud or address compromise occurs, call <code>set_status(payee_id, Suspended)</code> or <code>Revoked</code> to freeze new locks and enable sender refunds.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Developer Quick Start</h2>
+    <p>Integrate Kinlock in TypeScript in under five minutes:</p>
+    <pre><code>import { createLock, getLock, preflight, buildClaimLink } from "@kinlock/sdk";
+
+// 1. Run preflight validation
+const checks = await preflight(config, {
+  sender: "G...",
+  recipient: "G...",
+  total: 1000000000n, // 100 USDC in base units (7 decimals)
+  refHash: "...",
+});
+
+// 2. Build and submit transaction
+const tx = await createLock(config, {
+  sender: "G...",
+  recipient: "G...",
+  token: config.usdcContractId,
+  tranches: [{ amount: 1000000000n, unlockAt: 1735689600n }],
+  expiresAt: 1740787200n,
+  refHash: "...",
+});</code></pre>
+  </section>
+</main>
+<footer class="site">
+  <span>Kinlock is testnet-only, unaudited software. Don't rely on it for anything real yet.</span>
+  <span><a href="https://github.com/Kinlock-Org/Kinlock-Org.github.io">Source for this site</a></span>
+</footer>
+<script src="nav.js" defer></script>
+</body>
+</html>
